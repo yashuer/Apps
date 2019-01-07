@@ -1,0 +1,33 @@
+﻿<#@ include file="$(SolutionDir)/Apps.Common/T4/Common.tt"#><#@ output extension=".cs"#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using Apps.BLL;
+using Apps.DAL;
+using Apps.IBLL;
+using Apps.IDAL;
+using Microsoft.Practices.Unity;
+
+namespace Apps.Core
+{
+    public partial class DependencyRegisterType
+    {
+        //一般模型 通用注入
+        public static void RegisterCommonType(ref UnityContainer container)
+        {
+<#
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+	if(entity.Name.StartsWith("Sys"))
+		{            
+#>			
+			container.RegisterType<I<#=entity.Name#>BLL, <#=entity.Name#>BLL>();
+            container.RegisterType<I<#=entity.Name#>Repository, <#=entity.Name#>Repository>();
+<#
+        }
+}
+#>
+        }
+	}
+}

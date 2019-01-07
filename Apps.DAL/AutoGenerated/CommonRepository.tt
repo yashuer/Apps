@@ -1,0 +1,25 @@
+﻿<#@ include file="../../Apps.Common/T4/Common.tt"#><#@ 
+ output extension=".cs"#>
+ <#
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile(entity.Name + "Repository.cs");
+#>
+using Apps.Models;
+using Apps.IDAL;
+namespace Apps.DAL
+{
+    public partial class <#=entity.Name #>Repository : CommonRepository<<#=entity.Name #>>, I<#=entity.Name #>Repository
+    {
+        public <#=entity.Name #>Repository(DBContainer db) : base(db)
+        {
+			
+        }
+    }
+<#
+    EndNamespace(code);
+}
+
+fileManager.Process();
+
+#>

@@ -1,0 +1,39 @@
+﻿<#@ include file="../../Apps.Common/T4/Common.tt"#>
+<#@ output extension=".cs"#>
+ <#
+
+//const string inputFile = @"../../Apps.Models/DB.edmx";
+//var textTransform = DynamicTextTransformation.Create(this);
+//var code = new CodeGenerationTools(this);
+//var ef = new MetadataTools(this);
+//var typeMapper = new TypeMapper(code, ef, textTransform.Errors);
+//var	fileManager = EntityFrameworkTemplateFileManager.Create(this);
+//var itemCollection = new EdmMetadataLoader(textTransform.Host, textTransform.Errors).CreateEdmItemCollection(inputFile);
+//var codeStringGenerator = new CodeStringGenerator(code, typeMapper, ef);
+//
+//if (!typeMapper.VerifyCaseInsensitiveTypeUniqueness(typeMapper.GetAllGlobalItems(itemCollection), inputFile))
+//{
+//    return string.Empty;
+//}
+//
+//WriteHeader(codeStringGenerator, fileManager);
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile("I"+entity.Name + "Repository.cs");
+    //BeginNamespace(code);
+#>
+using Apps.Models;
+namespace Apps.IDAL
+{
+    public partial interface I<#=entity.Name #>Repository : ICommonRepository<<#=entity.Name #>>
+    {
+		
+    }
+<#
+    EndNamespace(code);
+}
+
+fileManager.Process();
+
+#>

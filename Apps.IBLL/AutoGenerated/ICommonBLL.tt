@@ -1,0 +1,31 @@
+﻿<#@ include file="../../Apps.Common/T4/Common.tt"#><#@ 
+ output extension=".cs"#>
+ <#
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+            fileManager.StartNewFile("I"+entity.Name + "BLL.cs");
+#>
+using System;
+using Apps.Common;
+using System.Collections.Generic;
+using Apps.Models<#=entity.Name.IndexOf("_")>0?"."+entity.Name.Substring(0,entity.Name.IndexOf("_")):".Sys" #>;
+namespace Apps.IBLL
+{
+    public partial interface I<#=entity.Name #>BLL
+    {
+        List<<#=entity.Name #>Model> GetList(ref GridPager pager, string queryStr);
+        bool Create(ref ValidationErrors errors, <#=entity.Name #>Model model);
+        bool Delete(ref ValidationErrors errors, string id);
+        bool Delete(ref ValidationErrors errors, string[] deleteCollection);
+        bool Edit(ref ValidationErrors errors, <#=entity.Name #>Model model);
+        <#=entity.Name #>Model GetById(string id);
+        bool IsExists(string id);
+    }
+<#
+            EndNamespace(code);
+        
+}
+
+fileManager.Process();
+
+#>

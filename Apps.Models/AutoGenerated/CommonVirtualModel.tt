@@ -1,0 +1,37 @@
+﻿<#@ include file="../../Apps.Common/T4/Common.tt"#><#@ 
+ output extension=".cs"#>
+ <#
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    if(entity.Name.StartsWith("Sys") || entity.Name.StartsWith("JOB"))
+        {
+            fileManager.StartNewFile("Virtual_"+entity.Name + "Model.cs");
+            var simpleProperties = typeMapper.GetSimpleProperties(entity);
+			var collectionNavigationProperties = typeMapper.GetCollectionNavigationProperties(entity);
+#>
+using Apps.Models;
+using System;
+namespace Apps.Models.Sys
+{
+    public class Virtual_<#=entity.Name #>Model
+    {
+<#
+if (simpleProperties.Any())
+{
+foreach(var edmProperty in simpleProperties)
+{
+#>
+		public virtual <#=typeMapper.GetTypeName(edmProperty.TypeUsage)#> <#=code.Escape(edmProperty)#> { get; set; }
+<#
+}
+}
+#> 
+	}
+<#
+            EndNamespace(code);
+        }
+}
+
+fileManager.Process();
+
+#>
